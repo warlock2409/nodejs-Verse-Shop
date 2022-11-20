@@ -8,9 +8,16 @@
                 <h1>Nothing there!</h1>
             <% } else { %>
                 <div style=" display: flex;  flex-wrap: wrap;">
+                    <div class="info" style="    background-color: #b19dc5; padding: 10px; border-radius: 5px;">
+                        <h3>Name: <%=info.name %></h3>
+                        <h3>Phone: <%=info.phone %></h3>
+                        <h3>Address: <%=info.address %></h3>
+                        <h3>Email: <%=info.email %></h3>
+                    </div>
                 <ul>
                     <% orders.forEach(order => { %>
                         <% var total=0 %>
+
                             <div style="background-color: rgb(175, 212, 175); padding:10px; margin-bottom: 10px; width: 300px; ">
                             <h6># <%= order.id %></h6>
                             <ul>
@@ -20,16 +27,20 @@
                                         @ <%= product.price %>
                                         <% total += product.orderItem.qty*product.price %>
                                     </li>
-                                   
+                                    
                                 <% }); %>
                                 <h6>Purchased at <%=total %></h6>
-                                <% if(order.status) {%>
-                                    <h3><%= order.status %></h3>
-                                    <%} else {%>
-                                        <h3> Order-Placed</h3>
-                                        <%}%>
+                                
                             </ul>
-                        </div>
+                            <% if (!order.status){ %>
+                            <form action="/admin/transport" method="post">
+                                <input type="hidden" value="<%= order.id %>" name="orderId">
+                                <button class="btn" type="submit">Transported</button>
+                            </form>
+                           <% } else {%>
+                            <p>Transported</p>
+                            <% }%>
+                            </div>
                         
                     <% }); %>
                

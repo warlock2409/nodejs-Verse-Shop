@@ -8,6 +8,9 @@ const order = sequelize.define('order',{
     autoIncrement:true,
     allowNull:false,
     primaryKey:true
+  },
+  status:{
+    type:Sequelize.DataTypes.STRING
   }
 });
 module.exports=order;

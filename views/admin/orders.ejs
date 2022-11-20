@@ -1,0 +1,33 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+    <%- include('../includes/admin-nav.ejs') %>
+    <main>
+        <% if (prods.length > 0) { %>
+            <ul>
+                <% for (let product of prods) { %>
+                <li>
+                    <h4>Order_ID <%= product.id %> Date <%= product.createdAt %></h4>
+                    <h5>UserID <%= product.userId %></h5>
+                    <form action="/admin/upl" method="post">
+                        <button class="btn">Order Info</button>
+                        <input type="hidden" value="<%= product.userId %>" name="userId">
+                        <input type="hidden" value="<%= product.id %>" name="orderId">
+                    </form>
+                  <% if(!product.status){ %>
+                    
+                    <%}else { %>
+                        <form action="/admin/uplDelete" method="post">
+                            <button class="btn">Delete</button>
+                            <input type="hidden" value="<%= product.userId %>" name="userId">
+                            <input type="hidden" value="<%= product.id %>" name="orderId">
+                        </form>
+                    <%}%>
+                </li>
+                <% }%>
+            </ul>
+          
+        <% } %>

@@ -2,9 +2,11 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const errorController = require('./controllers/error');
 //db
+
 const sequelize = require('./util/datBase');
 const Product = require('./models/product');
 const User = require('./models/user');
@@ -21,24 +23,37 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
+
 const product = require('./models/product');
 const { BelongsTo } = require('sequelize');
 const user = require('./models/user');
 
-app.use((req,res,next)=>{
-  User.findByPk(1).then(user => {
-    req.user=user;
-    next();
-  }).catch(err => {
-    console.log(err);
-  })  
-})
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret:"my secret", resave:false,saveUninitialized:false}));
+app.use((req, res, next) => {
+ 
+  if (!req.session.user) {
+    return next();
+  }
+  
+  User.findByPk(req.session.user.id)
+
+    .then(user => {
+      req.user = user;
+      console.log("app.js*****",req.session.user.id, req.user);
+      next();
+    })
+    .catch(err => console.log(err));
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
+
 
 app.use(errorController.get404);
 
@@ -54,8 +69,8 @@ app.use(errorController.get404);
 
 User.hasMany(Product);
 User.hasOne(Cart);
-Cart.belongsToMany(Product, { through: CartIten });
 
+Cart.belongsToMany(Product, { through: CartIten });
 Order.belongsTo(User);
 User.hasMany(Order);
 Order.belongsToMany(Product, { through: OrderItem });
@@ -64,27 +79,7 @@ Order.belongsToMany(Product, { through: OrderItem });
 sequelize.
 // sync({force:true}).
 sync().
-then(result=>{
-    return User.findByPk(1);
-}).then(user=>{
-    if(!user){
-        return User.create({userName:"ram",email:"123@gmail.com"});
-    }
-    return user;
-}).then(user =>{
-    // console.log(user);
-    // return user.createOrder();
-    return user.createCart();
-    
-})
-// .then(result=>{
-//   return User.findOne({where:{id:1}});
-// }).then(data=>{
-//   return data.getCart();
-// })
-.then(cart=>{
-    console.log(cart.toJSON());
-    
+then(cart=>{
     app.listen(3000);
 })
 .catch(err => console.log(err));

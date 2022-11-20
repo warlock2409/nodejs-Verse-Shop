@@ -33,16 +33,21 @@ form {
 }
 
 .main-header__nav {
+  width: 100%;
   height: 100%;
-  display: none;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
 }
-
+.block{
+  margin: 10px;
+}
 .main-header__item-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
+  align-items: flex-end;
 }
 
 .main-header__item {
@@ -188,7 +193,7 @@ form {
   text-decoration: none;
   font: inherit;
   border: 1px solid #00695c;
-  color: #00695c;
+  color: #000b69;
   background: white;
   border-radius: 3px;
   cursor: pointer;
@@ -199,7 +204,23 @@ form {
   background-color: #00695c;
   color: white;
 }
+.btnu {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-decoration: none;
+  font: inherit;
+  border: 1px solid #00695c;
+  color: #000b69;
+  background: rgb(178, 13, 184);
+  border-radius: 3px;
+  cursor: pointer;
+}
 
+.btnu:hover,
+.btnu:active {
+  background-color: #00695c;
+  color: white;
+}
 .btn.danger {
   color: red;
   border-color: red;
