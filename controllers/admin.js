@@ -34,7 +34,7 @@ exports.postStatus= (req,res,next)=>{
   Order.findAll({where:{id:oId}})
   .then(product=>{
     console.log(product[0]);
-    product[0].status="Trasported";
+    product[0].status="Shipped";
     return product[0].save();
   }).then(result=>{
     console.log(result);
