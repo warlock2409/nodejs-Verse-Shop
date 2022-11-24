@@ -3,7 +3,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const multer = require('multer');
+const flash = require('connect-flash');
+const multer = require('multer'); 
 const errorController = require('./controllers/error');
 //db
 
@@ -30,6 +31,7 @@ const { BelongsTo } = require('sequelize');
 const user = require('./models/user');
 const e = require('express');
 
+//multer
 const fileStorage = multer.diskStorage({
   destination:(req,file,cb)=>{
     cb(null,'images');
@@ -47,26 +49,31 @@ const fileFilters = (req,file,cb)=>{
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
+// file upload multer
 app.use(multer({storage:fileStorage,fileFilter:fileFilters}).single('image'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/images",express.static(path.join(__dirname, 'images')));
 
 app.use(session({secret:"my secret", resave:false,saveUninitialized:false}));
+app.use(flash());
 app.use((req, res, next) => {
  
   if (!req.session.user) {
     return next();
   }
-  
   User.findByPk(req.session.user.id)
-
     .then(user => {
       req.user = user;
       console.log("app.js*****",req.session.user.id, req.user);
       next();
     })
     .catch(err => console.log(err));
+});
+
+app.use((req,res,next)=>{
+  res.locals.isAuthenticated=req.session.isLoggedIn;
+  next();
 });
 
 app.use('/admin', adminRoutes);

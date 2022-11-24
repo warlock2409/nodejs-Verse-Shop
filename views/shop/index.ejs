@@ -18,7 +18,7 @@
                                 alt="<%= product.title %>">
                         </div>
                         <div class="card__content">
-                            <h2 class="product__price"><%= product.price %></h2>
+                            <h2 class="product__price"><i class="fa-solid fa-indian-rupee-sign fa-xs"></i> <%= product.price %> </h2>
                             <p class="product__description"><%= product.description %></p>
                         </div>
                         <div class="card__actions">
@@ -30,6 +30,18 @@
                     </article>
                 <% } %>
             </div>
+            <section class="pagination">
+                <% if(hasPrevPage) {%>
+                    <a href="/"><i class="fa-solid fa-arrow-left"></i></a>
+                    <a href="?page=<%=PrevPage%>"><%=PrevPage%></a>
+                <% } %>
+                <a href="?page=<%=currentPage%>" class="active"><%=currentPage%></a>
+                <% if(hasNextPage) {%>
+                    <a href="?page=<%=NextPage%>"><%=NextPage%></a>
+                    <a href="?page=<%=LastPage%>"><i class="fa-solid fa-arrow-right"></i></i></a>
+                <% } %>
+               
+            </section>
         <% } else { %>
             <h1>No Products Found!</h1>
         <% } %>

@@ -7,8 +7,16 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main >
-        <a href="http:/admin/Adminlogin"> Shop-LogIn</a>
-       
+        <div class="admin">
+
+            <a href="http:/admin/Adminlogin"><i class="fa-solid fa-truck"></i>  Shop-LogIn</a>
+        </div>
+
+        <% if(errorRes) {%>
+            <div class="errorRes">
+             <%=errorRes %>
+            </div>
+            <%}%>
         <form class="login-form" action="/login" method="POST">
             <h5>User Log-In</h5>
             <div class="form-control">

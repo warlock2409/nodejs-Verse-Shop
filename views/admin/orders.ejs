@@ -9,24 +9,27 @@
         <% if (prods.length > 0) { %>
             <ul>
                 <% for (let product of prods) { %>
-                <li>
-                    <h4>Order_ID <%= product.id %> Date <%= product.createdAt %></h4>
-                    <h5>UserID <%= product.userId %></h5>
-                    <form action="/admin/upl" method="post">
-                        <button class="btn">Order Info</button>
-                        <input type="hidden" value="<%= product.userId %>" name="userId">
-                        <input type="hidden" value="<%= product.id %>" name="orderId">
-                    </form>
-                  <% if(!product.status){ %>
-                    
-                    <%}else { %>
-                        <form action="/admin/uplDelete" method="post">
-                            <button class="btn">Delete</button>
-                            <input type="hidden" value="<%= product.userId %>" name="userId">
-                            <input type="hidden" value="<%= product.id %>" name="orderId">
-                        </form>
-                    <%}%>
-                </li>
+                    <div class="listorder">
+                        <li >
+                            <p>Order_ID <%= product.id %></p>
+                            <p>User_Id <%= product.userId %></p>
+                            <p> Date <%= product.createdAt %></p>
+                            <form action="/admin/upl" method="post" class="forms">
+                                <button class="btn">Order Info</button>
+                                <input type="hidden" value="<%= product.userId %>" name="userId">
+                                <input type="hidden" value="<%= product.id %>" name="orderId">
+                            </form>
+                        <% if(!product.status){ %>
+                            
+                            <%}else { %>
+                                <form action="/admin/uplDelete" method="post" class="formsD">
+                                    <button class="btn danger">Delete</button>
+                                    <input type="hidden" value="<%= product.userId %>" name="userId">
+                                    <input type="hidden" value="<%= product.id %>" name="orderId">
+                                </form>
+                            <%}%>
+                        </li>
+                    </div>
                 <% }%>
             </ul>
           

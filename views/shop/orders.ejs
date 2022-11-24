@@ -1,4 +1,5 @@
 <%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/cart.css">
     </head>
 
     <body>
@@ -7,27 +8,31 @@
             <% if (orders.length <= 0) { %>
                 <h1>Nothing there!</h1>
             <% } else { %>
-                <div style=" display: flex;  flex-wrap: wrap;">
+            <div>
                 <ul>
                     <% orders.forEach(order => { %>
                         <% var total=0 %>
-                            <div style="background-color: rgb(175, 212, 175); padding:10px; margin-bottom: 10px; width: 300px; ">
-                            <h6># <%= order.id %></h6>
+                        <div class="orderItems">
+
+                            <h6 class="id"># <%= order.id %></h6>
                             <ul>
-                                <% order.products.forEach(product => { %>
-                                    <li style="list-style: none; margin: 2px;">
-                                       <%= product.title %>  qty: <%= product.orderItem.qty %>
-                                        @ <%= product.price %>
-                                        <% total += product.orderItem.qty*product.price %>
-                                    </li>
-                                   
-                                <% }); %>
-                                <h6>Purchased at <%=total %></h6>
+                                <div class="status">
                                 <% if(order.status) {%>
-                                    <h3><%= order.status %></h3>
-                                    <%} else {%>
-                                        <h3> Order-Placed</h3>
-                                        <%}%>
+                                    <p><i class="fa-solid fa-plane"></i> <%= order.status %></p>
+                                <%} else {%>
+                                    <p class="yellow"> <i class="fa-solid fa-clock"></i> Order-Placed</p>
+                                <%}%>
+                                </div>
+                                <% order.products.forEach(product => { %>
+                                    <li style="list-style: none; margin: 2px;" class="li1">
+                                        <p class="white"> <i class="fa-solid fa-paperclip"></i> <%= product.title %></p>
+                                        <p class="white"><i class="fa-solid fa-cart-plus"></i> Qty: <%= product.orderItem.qty %></p>   
+                                        <p class="white">price: <%= product.price %> <i class="fa-solid fa-indian-rupee-sign"></i></p>
+                                        <p class="white"><% total += product.orderItem.qty*product.price %></p>
+                                    </li>
+                                <% }); %>
+                                <p class="purchase"><i class="fa-solid fa-check"></i> Total:  <%=total %> </p>
+                              
                             </ul>
                         </div>
                         

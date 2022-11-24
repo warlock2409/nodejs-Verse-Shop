@@ -4,3 +4,52 @@
     margin: auto;
     display: block;
 }
+.errorRes{
+    border: 1px solid #160606;
+    text-align: center;
+    background-color: #e99e9e;
+    width: 50%;
+    margin: auto;
+    padding: 1rem;
+    font-size: large;
+}
+.admin{
+    border: 1px solid black;
+    display: inline;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+    position: absolute;
+    color: #160606;
+    font-weight: 800;
+    background-color: #4bc06e;
+}
+.admin:hover{
+    background-color: rgb(235, 238, 237);
+    color: rgb(252, 252, 252);
+}
+.admin a{
+    text-decoration: none;
+}
+.listorder{
+    width: 70%;
+    left: 100px;
+    position: relative;
+    margin: auto;
+    background-color: #d8cfcf;
+    margin: 5px;
+    padding: 10px;
+}
+.listorder li{
+    list-style: none;
+}
+.forms{
+    position: absolute;
+    right:15%;
+    bottom: 30%;
+}
+.formsD{
+    position: absolute;
+    right:5%;
+    bottom: 30%;
+}

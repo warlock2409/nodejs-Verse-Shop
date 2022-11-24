@@ -3,18 +3,53 @@ const Cart = require('../models/cart');
 const { where } = require('sequelize');
 const product = require('../models/product');
 const { render } = require('pug');
+const NOITems=3;
 
 exports.getProducts = (req, res, next) => {
-  console.log("sessiom:" ,req.session);
-  Product.findAll().then(products=>{
-    const isLoggedIn =req.session.isLoggedIn;
-    res.render('shop/product-list', {
-          prods: products,
-          pageTitle: 'All Products',
-          path: '/products',
-          isAuthenticated: isLoggedIn
-        });
+  const isLoggedIn =req.session.isLoggedIn;
+  console.log(isLoggedIn);
+  var page = +req.query.page;
+  console.log(page,"page");
+  var offsets=0;
+  if(page){
+    offsets=(page)*NOITems;
+  }else{
+    page=0;
+  }
+  var limit=NOITems;
+  var pages=0;
+  Product.findAndCountAll().then(data=>{
+    pages=Math.ceil(data.count/NOITems);
+    console.log(page);
+    var items=parseInt((page*3));
+    
+    console.log("has",(items));
+    return Product.findAll({offset: offsets,limit:limit}).then(products=>{
+      res.render('shop/product-list', {
+            prods: products, 
+            pageTitle: 'All Products',
+            path: '/products',
+            isAuthenticated: isLoggedIn,
+            pages:pages,
+            hasNextPage:NOITems+page*NOITems< data.count,
+            hasPrevPage:page>=1,
+            NextPage:page+1,
+            PrevPage:page-1,
+            LastPage:pages-1,
+            currentPage:page
+          });
+    })
   }).catch(err =>console.log(err));
+  // console.log("sessiom:" ,req.session);
+  // Product.findAll().then(products=>{
+  //   const isLoggedIn =req.session.isLoggedIn;
+  //   res.render('shop/product-list', {
+  //         prods: products,
+  //         pageTitle: 'All Products',
+  //         path: '/products',
+  //         isAuthenticated: isLoggedIn
+  //       });
+  // }).catch(err =>console.log(err));
 };
 
 exports.getProduct = (req, res, next) => { 
@@ -30,14 +65,6 @@ exports.getProduct = (req, res, next) => {
   }).catch(err =>{
     console.log(err);
   })
-  // Product.findById(prodId).then(([product])=>{
-  //   console.log(product);
-  //   res.render('shop/product-detail', {
-  //     product: product[0],
-  //     pageTitle: product.title,
-  //     path: '/products'
-  //   });
-  // }).catch(err => console.log(err));
   
 };
 
@@ -45,22 +72,38 @@ exports.getIndex = (req, res, next) => {
   
   const isLoggedIn =req.session.isLoggedIn;
   console.log(isLoggedIn);
-  Product.findAll().then(products=>{
-    res.render('shop/index', {
-          prods: products, 
-          pageTitle: 'Shop',
-          path: '/',
-          isAuthenticated: isLoggedIn
-        });
+  var page = +req.query.page;
+  console.log(page,"page");
+  var offsets=0;
+  if(page){
+    offsets=(page)*NOITems;
+  }else{
+    page=0;
+  }
+  var limit=NOITems;
+  var pages=0;
+  Product.findAndCountAll().then(data=>{
+    pages=Math.ceil(data.count/NOITems);
+    console.log(page);
+    var items=parseInt((page*3));
+    
+    console.log("has",(items));
+    return Product.findAll({offset: offsets,limit:limit}).then(products=>{
+      res.render('shop/index', {
+            prods: products, 
+            pageTitle: 'Shop',
+            path: '/',
+            isAuthenticated: isLoggedIn,
+            pages:pages,
+            hasNextPage:NOITems+page*NOITems< data.count,
+            hasPrevPage:page>=1,
+            NextPage:page+1,
+            PrevPage:page-1,
+            LastPage:pages-1,
+            currentPage:page
+          });
+    })
   }).catch(err =>console.log(err));
-  // Product.fetchAll()
-  // .then(([rows,field])=>{
-  //   res.render('shop/index', {
-  //     prods: rows,
-  //     pageTitle: 'Shop',
-  //     path: '/'
-  //   });
-  // }).catch(err=> console.log(err));
   
 };
 
@@ -87,24 +130,6 @@ exports.getCart = (req, res, next) => {
   }).catch(err=>{
     console.log(err);
   })
-  // Cart.getCart(cart => {
-  //   Product.fetchAll(products => {
-  //     const cartProducts = [];
-  //     for (product of products) {
-  //       const cartProductData = cart.products.find(
-  //         prod => prod.id === product.id
-  //       );
-  //       if (cartProductData) {
-  //         cartProducts.push({ productData: product, qty: cartProductData.qty });
-  //       }
-  //     }
-  //     res.render('shop/cart', {
-  //       path: '/cart',
-  //       pageTitle: 'Your Cart',
-  //       products: cartProducts
-  //     });
-  //   });
-  // });
 };
 
 exports.postCart = (req, res, next) => {

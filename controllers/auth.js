@@ -9,22 +9,24 @@ const transporter = nodemailer.createTransport({
     pass:"V&QqdB7pBqm4JzU"
   }
 })
-
-
-
 const bcrypt= require('bcryptjs');
+
 exports.getLogin = (req, res, next) => {
+  var err=null;
+  if(req.session.flash){
+    console.log("errorFlash",req.session.flash.email);
+    err=req.session.flash.email;
+  }
+  req.session.flash={};
   console.log( req.session.isLoggedIn);
   res.render('auth/login', { 
     path: '/login',
     pageTitle: 'Login',
-    isAuthenticated: false
+    errorRes:err
   });
 };
 
 exports.postSignUp = (req, res, next) => {
-
- 
   const emailid = req.body.email;
   const password = req.body.password;
   const name = req.body.name;
@@ -48,9 +50,8 @@ exports.postSignUp = (req, res, next) => {
         return user.createCart();
       }).then(result =>{
         console.log(result);
-       
          res.redirect('/login');
-  return transporter.sendMail(info, function(err,info){
+          return transporter.sendMail(info, function(err,info){
           if(err){
             console.log(err);
             return;
@@ -64,31 +65,29 @@ exports.postSignUp = (req, res, next) => {
     })
 }
 
-exports.postAddInfo= (req,res,next)=>{
-  
-  console.log(name , phone,address);
-}
 exports.postLogin = (req, res, next) => {
   const email=req.body.email;
   const password = req.body.password;
   User.findAll({where:{email:email}})
   .then(user => {
-    console.log("foundUser****",user);
     if(user.length== 0){
+      req.session.flash={email:"Invalid Email"};
       return res.redirect('/login');
     }
     return bcrypt.compare(password,user[0].password)
     .then(doMatch =>{
       if(doMatch){
+        console.log(req.session);
         req.session.isLoggedIn = true;
+        console.log(req.session);
         req.session.user = user[0];
        return req.session.save(err => {
           console.log(err);
           res.redirect('/');
         });
       }
+      req.session.flash={email:"Invalid Password"};
       return res.redirect('/login');
-
     })
     
   }).catch(err =>{

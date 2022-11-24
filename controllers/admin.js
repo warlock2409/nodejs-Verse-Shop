@@ -3,14 +3,17 @@ const Order = require('../models/order');
 const OrderItem = require('../models/order-item');
 const User=require('../models/user');
 const ShopKeeper= require('../models/shopkeeper');
+const { application } = require('express');
 
 exports.PostAdminLogin=(req,res,next)=>{
   const user=req.body.name;
   const password = req.body.password;
   ShopKeeper.findAll({where:{usercol:user}}).then(admin=>{
-    console.log(admin[0].password);
-    if(admin.length < 1){
-     return res.redirect('/login');
+    // console.log(!admin);
+    if(admin.length<1){
+      req.session.flash={email:"Invalid UserName"};
+      console.log("errorFlash",req.session);
+     return res.redirect('/admin/Adminlogin');
     }
     if(password == admin[0].password){
       console.log("okay");
@@ -19,15 +22,23 @@ exports.PostAdminLogin=(req,res,next)=>{
     }
    return admin
   }).then(admin=>{
-     return res.redirect('/');
+    req.session.flash={email:"Invalid Password"};
+     return res.redirect('/admin/Adminlogin');
   }).catch(err => console.log(err));
 }
 exports.getAdminLogin=(req,res,next)=>{
+  var err=null;
+  if(req.session.flash){
+    console.log("errorFlash",req.session.flash.email);
+    err=req.session.flash.email;
+  }
+  req.session.flash={};
   res.render('admin/log-in', { 
     path: '/AdminLogin',
     pageTitle: 'AdminLogIn',
-    isAuthenticated: false
+    errorRes:err
   });
+ 
 }
 exports.postStatus= (req,res,next)=>{
   const oId = req.body.orderId;
@@ -71,7 +82,7 @@ exports.getUserProductList=(req,res,next)=>{
       orders:orders,
       path: '/orderBook',
       pageTitle: 'All Orders',
-      isAuthenticated: true
+      
     });
   }).catch(err=>{
     console.log(err);
@@ -89,17 +100,8 @@ exports.getOrderDelete=(req,res,next)=>{
     return res.redirect('/admin/orderBook');
   })
 }
-
-
-
-
-
-
 exports.getAddProduct = (req, res, next) => {
   const isLoggedIn =req.session.isLoggedIn;
-  if(!isLoggedIn){
-    return res.redirect('/login');
-  }
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -123,7 +125,7 @@ exports.getIndex = (req, res, next) => {
 };
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  // const imageUrl = req.body.imageUrl;
+  
   const image = req.file;
   const price = req.body.price;
   const Qty = req.body.Qty;
@@ -157,10 +159,9 @@ exports.getEditProduct = (req, res, next) => {
   }
   const prodId = req.params.productId;
   Product.findAll({where:{id:prodId}})
-  // Product.findByPk(prodId)
+ 
   .then(products=>{
     const product=products[0];
-    const isLoggedIn = req.get('Cookie').split('=')[1];
     res.render('admin/edit-product', {
           pageTitle: 'Edit Product',
           path: '/admin/edit-product',
@@ -206,9 +207,6 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
  
   const isLoggedIn =req.session.isLoggedIn;
-  if(!isLoggedIn){
-    return res.redirect('/login');
-  }
   console.log("user:********",req.user);
   // req.user.getProducts()
   Product.findAll()
@@ -225,14 +223,19 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+  const prodId = req.params.productID;
+  console.log(prodId);
   Product.findByPk(prodId).then(product=>{
     return product.destroy();
   }).then(result=>{
     console.log("destroyed",result);
-    res.redirect('/admin/products');
+    // res.redirect('/admin/products');
+     res.status(200).json({status:"deleted"});
   }).catch(err =>{
     console.log(err);
+    res.status(500).json({status:"Not-deleted"});
   })
 
 };
+
+

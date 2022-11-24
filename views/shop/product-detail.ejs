@@ -7,10 +7,12 @@
             <h1><%= product.title %></h1>
             <hr>
             <div>
-                <img src="/<%= product.imgUrl %>" alt="<%= product.title %>">
+                <img style="width: 400px; " src="/<%= product.imgUrl %>" alt="<%= product.title %>" >
             </div>
-            <h2><%= product.price %></h2>
+            <h2><i class="fa-solid fa-indian-rupee-sign fa-xs"></i> <%= product.price %> </h2>
             <p><%= product.description %></p>
-            <%- include('../includes/add-to-cart.ejs') %>
+            <% if (isAuthenticated) { %>
+                <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+            <%}%>
         </main>
         <%- include('../includes/end.ejs') %>

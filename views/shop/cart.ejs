@@ -16,15 +16,15 @@
                             <% total += p.price*p.cartItem.qty %>
                             <form action="/cart-delete-item" method="POST">
                                 <input type="hidden" value="<%= p.id %>" name="productId">
-                                <button class="btn danger" type="submit">Delete</button>
+                                <button class="btn danger" type="submit"><i class="fa-solid fa-trash"></i></button>
                             </form>
                         </li>
                     <% }) %>
                     
                     
                     <form action="/place-order" method="post">
-                        <button class='btn' style="margin:10px ;" type="submit">Place Order</button>
-                        <div  style="margin:10px ;" class="btn" disabled>Total: <%= total %></div>
+                        <button class='btn' style="margin:10px ;" type="submit"> <i class="fa-solid fa-ticket"></i> Place Order</button>
+                        <div  style="margin:10px ;" class="btn" disabled>Total: <%= total %> <i class="fa-solid fa-indian-rupee-sign"></i></div>
                     </form>
 
                 </ul>
