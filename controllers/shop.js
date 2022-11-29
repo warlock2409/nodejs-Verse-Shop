@@ -107,29 +107,22 @@ exports.getIndex = (req, res, next) => {
   
 };
 
-exports.getCart = (req, res, next) => {
+exports.getCart = async (req, res, next) => {
 
  console.log("getCart",req);
-
-  req.user.getCart()
-  // Cart.findAll()
-  .then(cart=>{
-    console.log("user get cart***",cart);
-    cart.getProducts().then( product=>{
-      console.log("user get product***",product);
-     
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: product,
-        isAuthenticated: req.session.isLoggedIn
+  try{
+    const cart = await req.user.getCart()
+    const product = await cart.getProducts()
+    const render = await res.render('shop/cart',{
+          path: '/cart',
+          pageTitle: 'Your Cart',
+          products: product,
+          isAuthenticated: req.session.isLoggedIn
       });
-    }
-    )
-   
-  }).catch(err=>{
+  }catch(err){
     console.log(err);
-  })
+  }
+  
 };
 
 exports.postCart = (req, res, next) => {

@@ -8,38 +8,40 @@
                 <h1>Nothing there!</h1>
             <% } else { %>
                 <div style=" display: flex;  flex-wrap: wrap;">
-                    <div class="info" style="    background-color: #b19dc5; padding: 10px; border-radius: 5px;">
-                        <h3>Name: <%=info.name %></h3>
-                        <h3>Phone: <%=info.phone %></h3>
-                        <h3>Address: <%=info.address %></h3>
-                        <h3>Email: <%=info.email %></h3>
+                    <div class="info" style="background-color: #abc0b4d2; padding: 10px; border-radius: 5px; width: 400px;">
+                        <h3>Name:</h3><p><%=info.name %></p>
+                        <h3>Phone: </h3><p><%=info.phone %></p>
+                        <h3>Address: </h3><p><%=info.address %></p>
+                        <h3>Email:</h3> <p><%=info.email %></p>
                     </div>
                 <ul>
                     <% orders.forEach(order => { %>
                         <% var total=0 %>
-
-                            <div style="background-color: rgb(175, 212, 175); padding:10px; margin-bottom: 10px; width: 300px; ">
+                            <div style="background-image: linear-gradient(to right, rgba(128, 207, 92, 0.308), rgb(233, 225, 225)); margin-bottom: 10px; width: 800px; ">
                             <h6># <%= order.id %></h6>
-                            <ul>
+                            <ul style="position:relative ;">
                                 <% order.products.forEach(product => { %>
                                     <li style="list-style: none; margin: 2px;">
-                                       <%= product.title %>  qty: <%= product.orderItem.qty %>
-                                        @ <%= product.price %>
-                                        <% total += product.orderItem.qty*product.price %>
+                                        <div style="display:flex ;justify-content: space-between;background-color: cadetblue;padding: 0px 10px 0px 10px; width: 500px;">
+                                           <p>Product: <%= product.title %> </p> 
+                                           <p> qty: <%= product.orderItem.qty %></p>
+                                            <p>At <%= product.price %></p>
+                                            <% total += product.orderItem.qty*product.price %>
+                                        </div>
                                     </li>
                                     
                                 <% }); %>
-                                <h6>Purchased at <%=total %></h6>
-                                
+                                <p style="padding: 10px;">Total Purchased:<%=total %></p>
+                                <% if (!order.status){ %>
+                                    <form action="/admin/transport" method="post">
+                                        <input type="hidden" value="<%= order.id %>" name="orderId">
+                                        <button class="btn" type="submit" style="margin:10px ;">Transported</button>
+                                    </form>
+                                   <% } else {%>
+                                    <p style="margin:10px ; background-color: #3a9761; display: inline; padding: 5px;position: absolute;right: 65px;top: 5px;">Transported</p>
+                                    <% }%>
                             </ul>
-                            <% if (!order.status){ %>
-                            <form action="/admin/transport" method="post">
-                                <input type="hidden" value="<%= order.id %>" name="orderId">
-                                <button class="btn" type="submit">Transported</button>
-                            </form>
-                           <% } else {%>
-                            <p>Transported</p>
-                            <% }%>
+
                             </div>
                         
                     <% }); %>
