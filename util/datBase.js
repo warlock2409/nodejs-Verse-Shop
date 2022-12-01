@@ -8,7 +8,7 @@ const Sequelize = require('sequelize');
 //     password:'Sql@2022'
 // });
 
-const sequelize = new Sequelize("node","rajaraman","Sql@2022",{dialect:'mysql', host:'localhost'});
+const sequelize = new Sequelize("node_verse","rajaraman","Sql@2022",{dialect:'mysql', host:'db4free.net',charset:'utf8mb4'});
 async function myFunction() {
 try {
     await sequelize.authenticate();
